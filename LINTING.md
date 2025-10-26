@@ -8,13 +8,12 @@
 oop/
 ├── .clang-format          # Конфигурация форматирования
 ├── .clang-tidy           # Конфигурация проверки стиля
-├── lint_all.sh           # Скрипт проверки (Linux/Mac)
 ├── lint_all.bat          # Скрипт проверки (Windows)
-├── Makefile              # Команды для проверки
-└── lab_1/                # Лабораторные работы
+├── codestyle.md          # Правила кодстайла
+└── lab_2/                # Лабораторные работы
     ├── include/
     ├── src/
-    └── test/
+    └── tests/
 ```
 
 ## 🚀 Использование
@@ -36,13 +35,13 @@ lint_all.bat
 **Windows** (используйте команды напрямую или `lint_all.bat`):
 ```powershell
 # Проверка форматирования
-clang-format --dry-run --Werror lab_1/src/*.cpp lab_1/include/*.hpp
+clang-format --dry-run --Werror lab_2/src/*.cpp lab_2/include/*.hpp
 
 # Автоматическое форматирование
-clang-format -i lab_1/src/*.cpp lab_1/include/*.hpp
+clang-format -i lab_2/src/*.cpp lab_2/include/*.hpp
 
 # Проверка стиля кода
-clang-tidy lab_1/src/*.cpp lab_1/include/*.hpp -- -std=c++14 -Ilab_1/include
+clang-tidy lab_2/src/*.cpp lab_2/include/*.hpp -- -std=c++17 -Ilab_2/include
 ```
 
 **Linux/Mac** (с Makefile):
@@ -61,17 +60,17 @@ make check-all     # выполнить все проверки
 ### Проверка конкретной лабы
 
 ```bash
-# Проверка lab_1 (универсально для любой lab_X)
-LAB_NAME="lab_1"
+# Проверка lab_2 (универсально для любой lab_X)
+LAB_NAME="lab_2"
 clang-format --dry-run --Werror $LAB_NAME/src/*.cpp $LAB_NAME/include/*.hpp
-clang-tidy $LAB_NAME/src/*.cpp $LAB_NAME/include/*.hpp -- -std=c++14 -I$LAB_NAME/include
+clang-tidy $LAB_NAME/src/*.cpp $LAB_NAME/include/*.hpp -- -std=c++17 -I$LAB_NAME/include
 ```
 
 Или без переменной:
 ```bash
-# Для lab_1
-clang-format --dry-run --Werror lab_1/src/*.cpp lab_1/include/*.hpp
-clang-tidy lab_1/src/*.cpp lab_1/include/*.hpp -- -std=c++14 -Ilab_1/include
+# Для lab_2
+clang-format --dry-run --Werror lab_2/src/*.cpp lab_2/include/*.hpp
+clang-tidy lab_2/src/*.cpp lab_2/include/*.hpp -- -std=c++17 -Ilab_2/include
 ```
 
 ## ⚙️ Настройки
@@ -109,17 +108,17 @@ brew install clang-format clang-tidy
 
 ### Форматирование файла:
 ```bash
-clang-format -i lab_1/src/PalindromeChecker.cpp
+clang-format -i lab_2/src/binary.cpp
 ```
 
 ### Проверка конкретного файла:
 ```bash
-clang-tidy lab_1/src/PalindromeChecker.cpp -- -std=c++14 -Ilab_1/include
+clang-tidy lab_2/src/binary.cpp -- -std=c++17 -Ilab_2/include
 ```
 
 ### Автоматическое исправление:
 ```bash
-clang-tidy -fix lab_1/src/PalindromeChecker.cpp -- -std=c++14 -Ilab_1/include
+clang-tidy -fix lab_2/src/binary.cpp -- -std=c++17 -Ilab_2/include
 ```
 
 ## 🎯 Рекомендации
