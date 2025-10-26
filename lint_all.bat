@@ -19,9 +19,9 @@ for /d %%d in (lab_*) do (
         echo   🔧 Проверка стиля кода...
         for /r "%%d" %%f in (*.cpp *.hpp *.h) do (
             if exist "%%d\include" (
-                clang-tidy "%%f" -- -std=c++14 -I%%d\include >nul 2>&1
+                clang-tidy "%%f" -- -std=c++17 -I%%d\include >nul 2>&1
             ) else (
-                clang-tidy "%%f" -- -std=c++14 >nul 2>&1
+                clang-tidy "%%f" -- -std=c++17 >nul 2>&1
             )
             if errorlevel 1 (
                 echo     ⚠️  %%f - есть предупреждения стиля
