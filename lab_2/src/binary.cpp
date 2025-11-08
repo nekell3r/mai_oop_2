@@ -14,21 +14,21 @@ Binary::Binary(const size_t& n, unsigned char t) : digits_(n, t) {
 }
 
 Binary::Binary(const std::initializer_list<unsigned char>& lst) {
-  for (const auto& d : lst) {
-    if (d != '0' && d != '1') {
+  for (const auto& digit : lst) {
+    if (digit != '0' && digit != '1') {
       throw std::invalid_argument("Binary digit must be '0' or '1'");
     }
   }
-  std::string s(lst.begin(), lst.end());
-  std::reverse(s.begin(), s.end());
-  digits_ = Array(s);
+  std::string temp(lst.begin(), lst.end());
+  std::reverse(temp.begin(), temp.end());
+  digits_ = Array(temp);
 }
 
 Binary::Binary(const std::string& s) {
   validate(s);
-  std::string rev = s;
-  std::reverse(rev.begin(), rev.end());
-  digits_ = Array(rev);
+  std::string reversed = s;
+  std::reverse(reversed.begin(), reversed.end());
+  digits_ = Array(reversed);
 }
 
 Binary::Binary(const Binary& other) : digits_(other.digits_) {}
@@ -53,67 +53,67 @@ void Binary::validate(const std::string& s) const {
   if (s.empty()) {
     throw std::invalid_argument("Binary string cannot be empty");
   }
-  for (const char c : s) {
-    if (c != '0' && c != '1') {
+  for (size_t i = 0; i < s.length(); i++) {
+    if (s[i] != '0' && s[i] != '1') {
       throw std::invalid_argument("Binary string must contain only '0' and '1'");
     }
   }
 }
 
 Binary Binary::Add(const Binary& other) const {
-  const size_t mx = std::max(digits_.GetSize(), other.digits_.GetSize());
-  const size_t sz = mx + 1;
-  Binary res(sz, '0');
+  size_t maxSize = std::max(digits_.GetSize(), other.digits_.GetSize());
+  size_t resultSize = maxSize + 1;
+  Binary result(resultSize, '0');
   unsigned char carry = 0;
 
-  for (size_t i = 0; i < sz; ++i) {
-    unsigned char d1 = (i < digits_.GetSize()) ? digits_.GetData()[i] : '0';
-    unsigned char d2 = (i < other.digits_.GetSize()) ? other.digits_.GetData()[i] : '0';
-    unsigned char v1 = d1 - '0';
-    unsigned char v2 = d2 - '0';
-    unsigned char sum = v1 + v2 + carry;
+  for (size_t i = 0; i < resultSize; i++) {
+    unsigned char digit1 = (i < digits_.GetSize()) ? digits_.GetData()[i] : '0';
+    unsigned char digit2 = (i < other.digits_.GetSize()) ? other.digits_.GetData()[i] : '0';
+    unsigned char val1 = digit1 - '0';
+    unsigned char val2 = digit2 - '0';
+    unsigned char sum = val1 + val2 + carry;
     carry = sum / 2;
-    unsigned char dr = (sum % 2) + '0';
-    res.digits_.InsertIndex(i, dr);
+    unsigned char resultDigit = (sum % 2) + '0';
+    result.digits_.InsertIndex(i, resultDigit);
   }
 
-  size_t actual = sz;
-  while (actual > 1 && res.digits_.GetData()[actual - 1] == '0') {
-    --actual;
+  size_t finalSize = resultSize;
+  while (finalSize > 1 && result.digits_.GetData()[finalSize - 1] == '0') {
+    finalSize--;
   }
-  res.digits_.SetSize(actual);
-  return res;
+  result.digits_.SetSize(finalSize);
+  return result;
 }
 
 Binary Binary::Subtract(const Binary& other) const {
   if (IsLess(other)) {
     throw std::invalid_argument("Cannot subtract: result would be negative");
   }
-  const size_t mx = std::max(digits_.GetSize(), other.digits_.GetSize());
-  Binary res(mx, '0');
+  size_t maxSize = std::max(digits_.GetSize(), other.digits_.GetSize());
+  Binary result(maxSize, '0');
   unsigned char borrow = 0;
 
-  for (size_t i = 0; i < mx; ++i) {
-    unsigned char d1 = (i < digits_.GetSize()) ? digits_.GetData()[i] : '0';
-    unsigned char d2 = (i < other.digits_.GetSize()) ? other.digits_.GetData()[i] : '0';
-    unsigned char v1 = d1 - '0';
-    unsigned char v2 = d2 - '0';
-    int diff = v1 - v2 - borrow;
+  for (size_t i = 0; i < maxSize; i++) {
+    unsigned char digit1 = (i < digits_.GetSize()) ? digits_.GetData()[i] : '0';
+    unsigned char digit2 = (i < other.digits_.GetSize()) ? other.digits_.GetData()[i] : '0';
+    int val1 = digit1 - '0';
+    int val2 = digit2 - '0';
+    int diff = val1 - val2 - borrow;
     if (diff < 0) {
       diff += 2;
       borrow = 1;
     } else {
       borrow = 0;
     }
-    res.digits_.InsertIndex(i, static_cast<char>(diff + '0'));
+    result.digits_.InsertIndex(i, (char)(diff + '0'));
   }
 
-  size_t actual = mx;
-  while (actual > 1 && res.digits_.GetData()[actual - 1] == '0') {
-    --actual;
+  size_t finalSize = maxSize;
+  while (finalSize > 1 && result.digits_.GetData()[finalSize - 1] == '0') {
+    finalSize--;
   }
-  res.digits_.SetSize(actual);
-  return res;
+  result.digits_.SetSize(finalSize);
+  return result;
 }
 
 bool Binary::IsEqual(const Binary& other) const {
@@ -133,7 +133,8 @@ Binary Binary::Copy() const {
 }
 
 std::ostream& Binary::Print(std::ostream& os) const {
-  for (size_t i = digits_.GetSize(); i > 0; --i) {
+  size_t len = digits_.GetSize();
+  for (size_t i = len; i > 0; i--) {
     os << digits_.GetData()[i - 1];
   }
   return os;
@@ -144,11 +145,12 @@ size_t Binary::GetSize() const {
 }
 
 std::string Binary::ToString() const {
-  std::string s;
-  for (size_t i = digits_.GetSize(); i > 0; --i) {
-    s += static_cast<char>(digits_.GetData()[i - 1]);
+  std::string str;
+  size_t len = digits_.GetSize();
+  for (size_t i = len; i > 0; i--) {
+    str += (char)digits_.GetData()[i - 1];
   }
-  return s;
+  return str;
 }
 
 }  // namespace lab2

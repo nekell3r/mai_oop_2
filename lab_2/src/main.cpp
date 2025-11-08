@@ -15,13 +15,13 @@ int main() {
   std::cout << "\n\n";
 
   std::cout << "Сложение: ";
-  lab2::Binary s = b1.Add(b2);
-  s.Print(std::cout);
+  lab2::Binary sum = b1.Add(b2);
+  sum.Print(std::cout);
   std::cout << "\n";
 
   std::cout << "Вычитание: ";
-  lab2::Binary d = b1.Subtract(b2);
-  d.Print(std::cout);
+  lab2::Binary diff = b1.Subtract(b2);
+  diff.Print(std::cout);
   std::cout << "\n\n";
 
   std::cout << "Сравнение:\n";
@@ -31,9 +31,9 @@ int main() {
   lab2::Binary x("1111");
   lab2::Binary y("1");
   std::cout << "Цепочка: (1111 + 1) - 1010 = ";
-  lab2::Binary tmp = x.Add(y);
-  lab2::Binary res = tmp.Subtract(lab2::Binary("1010"));
-  res.Print(std::cout);
+  lab2::Binary temp = x.Add(y);
+  lab2::Binary result = temp.Subtract(lab2::Binary("1010"));
+  result.Print(std::cout);
   std::cout << "\n\n";
 
   std::cout << "Проверка ошибок:\n";
