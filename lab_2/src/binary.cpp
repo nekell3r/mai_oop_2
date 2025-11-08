@@ -11,9 +11,11 @@ Binary::Binary(const size_t& n, unsigned char t) : digits_(n, t) {
   if (t != '0' && t != '1') {
     throw std::invalid_argument("Binary digit must be '0' or '1'");
   }
+  // проверка на валидность
 }
 
 Binary::Binary(const std::initializer_list<unsigned char>& lst) {
+  // проверяем каждый элемент
   for (const auto& digit : lst) {
     if (digit != '0' && digit != '1') {
       throw std::invalid_argument("Binary digit must be '0' or '1'");
@@ -61,22 +63,31 @@ void Binary::validate(const std::string& s) const {
 }
 
 Binary Binary::Add(const Binary& other) const {
-  size_t maxSize = std::max(digits_.GetSize(), other.digits_.GetSize());
+  size_t s1 = digits_.GetSize();
+  size_t s2 = other.digits_.GetSize();
+  size_t maxSize = s1 > s2 ? s1 : s2;
   size_t resultSize = maxSize + 1;
   Binary result(resultSize, '0');
   unsigned char carry = 0;
 
   for (size_t i = 0; i < resultSize; i++) {
-    unsigned char digit1 = (i < digits_.GetSize()) ? digits_.GetData()[i] : '0';
-    unsigned char digit2 = (i < other.digits_.GetSize()) ? other.digits_.GetData()[i] : '0';
-    unsigned char val1 = digit1 - '0';
-    unsigned char val2 = digit2 - '0';
-    unsigned char sum = val1 + val2 + carry;
+    unsigned char d1 = '0';
+    if (i < s1) {
+      d1 = digits_.GetData()[i];
+    }
+    unsigned char d2 = '0';
+    if (i < s2) {
+      d2 = other.digits_.GetData()[i];
+    }
+    int v1 = d1 - '0';
+    int v2 = d2 - '0';
+    int sum = v1 + v2 + carry;
     carry = sum / 2;
-    unsigned char resultDigit = (sum % 2) + '0';
-    result.digits_.InsertIndex(i, resultDigit);
+    unsigned char resDigit = (sum % 2) + '0';
+    result.digits_.InsertIndex(i, resDigit);
   }
 
+  // убираем ведущие нули
   size_t finalSize = resultSize;
   while (finalSize > 1 && result.digits_.GetData()[finalSize - 1] == '0') {
     finalSize--;
@@ -89,18 +100,26 @@ Binary Binary::Subtract(const Binary& other) const {
   if (IsLess(other)) {
     throw std::invalid_argument("Cannot subtract: result would be negative");
   }
-  size_t maxSize = std::max(digits_.GetSize(), other.digits_.GetSize());
+  size_t s1 = digits_.GetSize();
+  size_t s2 = other.digits_.GetSize();
+  size_t maxSize = s1 > s2 ? s1 : s2;
   Binary result(maxSize, '0');
   unsigned char borrow = 0;
 
   for (size_t i = 0; i < maxSize; i++) {
-    unsigned char digit1 = (i < digits_.GetSize()) ? digits_.GetData()[i] : '0';
-    unsigned char digit2 = (i < other.digits_.GetSize()) ? other.digits_.GetData()[i] : '0';
-    int val1 = digit1 - '0';
-    int val2 = digit2 - '0';
-    int diff = val1 - val2 - borrow;
+    unsigned char d1 = '0';
+    if (i < s1) {
+      d1 = digits_.GetData()[i];
+    }
+    unsigned char d2 = '0';
+    if (i < s2) {
+      d2 = other.digits_.GetData()[i];
+    }
+    int v1 = d1 - '0';
+    int v2 = d2 - '0';
+    int diff = v1 - v2 - borrow;
     if (diff < 0) {
-      diff += 2;
+      diff = diff + 2;
       borrow = 1;
     } else {
       borrow = 0;
@@ -108,6 +127,7 @@ Binary Binary::Subtract(const Binary& other) const {
     result.digits_.InsertIndex(i, (char)(diff + '0'));
   }
 
+  // удаляем ведущие нули
   size_t finalSize = maxSize;
   while (finalSize > 1 && result.digits_.GetData()[finalSize - 1] == '0') {
     finalSize--;
@@ -134,6 +154,9 @@ Binary Binary::Copy() const {
 
 std::ostream& Binary::Print(std::ostream& os) const {
   size_t len = digits_.GetSize();
+  if (len == 0) {
+    return os;
+  }
   for (size_t i = len; i > 0; i--) {
     os << digits_.GetData()[i - 1];
   }
@@ -145,8 +168,11 @@ size_t Binary::GetSize() const {
 }
 
 std::string Binary::ToString() const {
-  std::string str;
+  std::string str = "";
   size_t len = digits_.GetSize();
+  if (len == 0) {
+    return str;
+  }
   for (size_t i = len; i > 0; i--) {
     str += (char)digits_.GetData()[i - 1];
   }

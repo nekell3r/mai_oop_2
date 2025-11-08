@@ -8,6 +8,10 @@ Array::Array() : size_(0), data_(nullptr) {}
 
 Array::Array(const size_t& n, unsigned char val) {
   size_ = n;
+  if (n == 0) {
+    data_ = nullptr;
+    return;
+  }
   data_ = new unsigned char[n];
   for (size_t i = 0; i < n; i++) {
     data_[i] = val;
@@ -16,6 +20,10 @@ Array::Array(const size_t& n, unsigned char val) {
 
 Array::Array(const std::initializer_list<unsigned char>& lst) {
   size_ = lst.size();
+  if (size_ == 0) {
+    data_ = nullptr;
+    return;
+  }
   data_ = new unsigned char[size_];
   size_t idx = 0;
   for (const auto& elem : lst) {
@@ -25,10 +33,14 @@ Array::Array(const std::initializer_list<unsigned char>& lst) {
 }
 
 Array::Array(const std::string& str) {
-  size_ = str.size();
-  data_ = new unsigned char[size_];
-  for (size_t i = 0; i < size_; i++) {
-    data_[i] = (unsigned char)str[i];
+  size_ = str.length();
+  if (size_ == 0) {
+    data_ = nullptr;
+  } else {
+    data_ = new unsigned char[size_];
+    for (size_t i = 0; i < size_; i++) {
+      data_[i] = (unsigned char)str[i];
+    }
   }
 }
 
@@ -57,9 +69,13 @@ Array& Array::operator=(const Array& other) {
   }
   delete[] data_;
   size_ = other.size_;
-  data_ = new unsigned char[size_];
-  for (size_t i = 0; i < size_; i++) {
-    data_[i] = other.data_[i];
+  if (size_ > 0) {
+    data_ = new unsigned char[size_];
+    for (size_t i = 0; i < size_; i++) {
+      data_[i] = other.data_[i];
+    }
+  } else {
+    data_ = nullptr;
   }
   return *this;
 }
@@ -78,6 +94,9 @@ Array& Array::operator=(Array&& other) noexcept {
 bool Array::Equals(const Array& other) const {
   if (size_ != other.size_) {
     return false;
+  }
+  if (size_ == 0) {
+    return true;
   }
   for (size_t i = 0; i < size_; i++) {
     if (data_[i] != other.data_[i]) {
@@ -140,7 +159,9 @@ unsigned char* Array::GetData() const {
 }
 
 void Array::SetData(size_t sz, unsigned char* d) {
-  delete[] data_;
+  if (data_ != nullptr) {
+    delete[] data_;
+  }
   size_ = sz;
   data_ = d;
 }
@@ -150,7 +171,12 @@ void Array::SetSize(size_t sz) {
     return;
   }
   unsigned char* newData = new unsigned char[sz];
-  size_t copyLen = sz < size_ ? sz : size_;
+  size_t copyLen;
+  if (sz < size_) {
+    copyLen = sz;
+  } else {
+    copyLen = size_;
+  }
   for (size_t i = 0; i < copyLen; i++) {
     newData[i] = data_[i];
   }
@@ -163,8 +189,10 @@ void Array::SetSize(size_t sz) {
 }
 
 Array::~Array() noexcept {
-  delete[] data_;
-  data_ = nullptr;
+  if (data_ != nullptr) {
+    delete[] data_;
+    data_ = nullptr;
+  }
   size_ = 0;
 }
 

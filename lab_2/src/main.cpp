@@ -7,6 +7,7 @@ int main() {
 
   lab2::Binary b1("1010");
   lab2::Binary b2("11");
+  // тестируем основные операции
 
   std::cout << "Числа: ";
   b1.Print(std::cout);
@@ -46,7 +47,7 @@ int main() {
   try {
     lab2::Binary a("10");
     lab2::Binary b("1010");
-    a.Subtract(b);
+    a.Subtract(b);  // должно выбросить исключение
   } catch (const std::invalid_argument& e) {
     std::cout << "  ошибка вычитания: " << e.what() << "\n";
   }
